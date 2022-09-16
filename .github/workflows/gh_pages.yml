@@ -34,8 +34,7 @@ jobs:
       - name: Build Website
         run: elm make src/Hauptseite.elm --output _site/index.html
         
-      - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v1.0.4
-
-      - name: Deploy GitHub Pages site
-        uses: actions/deploy-pages@v1.2.0
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: _site
