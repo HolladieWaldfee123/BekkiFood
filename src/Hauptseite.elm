@@ -6,31 +6,61 @@ import Html.Attributes exposing (style)
 import Html.Events exposing (onClick)
 
 
+main : Program () Modell Nachricht
 main =
-    Browser.sandbox { init = 0, update = update, view = view }
+    Browser.sandbox { init = startModell, update = update, view = view }
+
+
+type alias Modell =
+    { nudeln : Int
+    , kartoffeln : Int
+    }
+
+
+{-| Unser initiales Modell, was beim Start der Website geladen wird.
+-}
+startModell : Modell
+startModell =
+    { nudeln = 1, kartoffeln = 1 }
 
 
 type Nachricht
-    = PlusEins
-    | MinusEins
+    = PlusEinsNudeln
+    | MinusEinsNudeln
+    | PlusEinsKartoffeln
+    | MinusEinsKartoffeln
 
 
-update nachricht model =
+update : Nachricht -> Modell -> Modell
+update nachricht altesModell =
     case nachricht of
-        PlusEins ->
-            model + 1
+        PlusEinsNudeln ->
+            { altesModell | nudeln = altesModell.nudeln + 1 }
 
-        MinusEins ->
-            model - 1
+        MinusEinsNudeln ->
+            { altesModell | nudeln = altesModell.nudeln - 1 }
+
+        PlusEinsKartoffeln ->
+            { altesModell | kartoffeln = altesModell.kartoffeln + 1 }
+
+        MinusEinsKartoffeln ->
+            { altesModell | kartoffeln = altesModell.kartoffeln - 1 }
 
 
-view model =
+view : Modell -> Html Nachricht
+view modell =
     div []
         [ h1 [] [ text "Deine Inteligente Einkaufsliste" ]
-        , button [ onClick PlusEins ] [ text "+" ]
-        , div [] [ text (String.fromInt model ++ " Portionen Nudeln mit Pesto ") ]
-        , button [ onClick MinusEins ] [ text "-" ]
+        , button [ onClick PlusEinsNudeln ] [ text "+" ]
+        , div [] [ text (String.fromInt modell.nudeln ++ " Portionen Nudeln mit Pesto ") ]
+        , button [ onClick MinusEinsNudeln ] [ text "-" ]
+        , button [ onClick PlusEinsKartoffeln ] [ text "+" ]
+        , div [] [ text (String.fromInt modell.kartoffeln ++ " Portionen Ofen Kartoffeln ") ]
+        , button [ onClick MinusEinsKartoffeln ] [ text "-" ]
         , hr [] []
-        , div [] [ text (String.fromInt (model * 100) ++ " Gramm Nudeln") ]
-        , div [] [ text (String.fromInt (model * 5) ++ " Löffel Pesto") ]
+        , div [] [ text (String.fromInt (modell.nudeln * 100) ++ " Gramm Nudeln") ]
+        , div [] [ text (String.fromInt (modell.nudeln * 5) ++ " Löffel Pesto") ]
+        , hr [] []
+        , div [] [ text (String.fromInt (modell.kartoffeln * 100) ++ " Gramm Kartoffeln") ]
+        , div [] [ text (String.fromInt (modell.kartoffeln * 5) ++ " Ml Öl") ]
         ]
