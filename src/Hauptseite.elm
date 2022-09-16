@@ -1,7 +1,8 @@
 module Hauptseite exposing (..)
 
 import Browser
-import Html exposing (Html, button, div, text)
+import Html exposing (Html, button, div, h1, hr, text)
+import Html.Attributes exposing (style)
 import Html.Events exposing (onClick)
 
 
@@ -25,7 +26,11 @@ update nachricht model =
 
 view model =
     div []
-        [ button [ onClick PlusEins ] [ text "+" ]
-        , div [] [ text (String.fromInt model) ]
+        [ h1 [] [ text "Deine Inteligente Einkaufsliste" ]
+        , button [ onClick PlusEins ] [ text "+" ]
+        , div [] [ text (String.fromInt model ++ " Portionen Nudeln mit Pesto ") ]
         , button [ onClick MinusEins ] [ text "-" ]
+        , hr [] []
+        , div [] [ text (String.fromInt (model * 100) ++ " Gramm Nudeln") ]
+        , div [] [ text (String.fromInt (model * 5) ++ " Löffel Pesto") ]
         ]
