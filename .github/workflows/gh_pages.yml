@@ -21,8 +21,10 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       
-      - name: Setup Elm
-        uses: justgook/setup-elm@1.2.0
+      - uses: mpizenberg/elm-tooling-action@v1.2
+        with:
+          cache-key: elm-home-${{ hashFiles('elm-tooling.json', 'elm.json') }}
+          cache-restore-key: elm-home
         
       - name: Build Website
         run: elm make src/Hauptseite.elm --output _site/index.html
