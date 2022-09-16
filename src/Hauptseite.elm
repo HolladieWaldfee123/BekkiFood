@@ -2,7 +2,6 @@ module Hauptseite exposing (..)
 
 import Browser
 import Html exposing (Html, button, div, h1, hr, text)
-import Html.Attributes exposing (style)
 import Html.Events exposing (onClick)
 
 
@@ -14,6 +13,7 @@ main =
 type alias Modell =
     { nudeln : Int
     , kartoffeln : Int
+    , bratnudeln : Int
     }
 
 
@@ -21,46 +21,55 @@ type alias Modell =
 -}
 startModell : Modell
 startModell =
-    { nudeln = 1, kartoffeln = 1 }
+    { nudeln = 1, kartoffeln = 1, bratnudeln = 1 }
 
 
 type Nachricht
-    = PlusEinsNudeln
-    | MinusEinsNudeln
-    | PlusEinsKartoffeln
-    | MinusEinsKartoffeln
+    = NudelnÄndern Int
+    | KartoffelnÄndern Int
+    | BratnudelnÄndern Int
 
 
 update : Nachricht -> Modell -> Modell
 update nachricht altesModell =
     case nachricht of
-        PlusEinsNudeln ->
-            { altesModell | nudeln = altesModell.nudeln + 1 }
+        NudelnÄndern änderung ->
+            { altesModell | nudeln = altesModell.nudeln + änderung }
 
-        MinusEinsNudeln ->
-            { altesModell | nudeln = altesModell.nudeln - 1 }
+        KartoffelnÄndern änderung ->
+            { altesModell | kartoffeln = altesModell.kartoffeln + änderung }
 
-        PlusEinsKartoffeln ->
-            { altesModell | kartoffeln = altesModell.kartoffeln + 1 }
-
-        MinusEinsKartoffeln ->
-            { altesModell | kartoffeln = altesModell.kartoffeln - 1 }
+        BratnudelnÄndern änderung ->
+            { altesModell | bratnudeln = altesModell.bratnudeln + änderung }
 
 
 view : Modell -> Html Nachricht
 view modell =
     div []
         [ h1 [] [ text "Deine Inteligente Einkaufsliste" ]
-        , button [ onClick PlusEinsNudeln ] [ text "+" ]
-        , div [] [ text (String.fromInt modell.nudeln ++ " Portionen Nudeln mit Pesto ") ]
-        , button [ onClick MinusEinsNudeln ] [ text "-" ]
-        , button [ onClick PlusEinsKartoffeln ] [ text "+" ]
-        , div [] [ text (String.fromInt modell.kartoffeln ++ " Portionen Ofen Kartoffeln ") ]
-        , button [ onClick MinusEinsKartoffeln ] [ text "-" ]
+        , viewEinRezept modell.nudeln  " Portionen Nudeln mit Pesto " NudelnÄndern
+        , viewEinRezept modell.kartoffeln  " Portionen Ofen Kartoffeln " KartoffelnÄndern
+        , viewEinRezept modell.bratnudeln  " Portionen Bratnudeln mit Pilzen " BratnudelnÄndern
         , hr [] []
-        , div [] [ text (String.fromInt (modell.nudeln * 100) ++ " Gramm Nudeln") ]
-        , div [] [ text (String.fromInt (modell.nudeln * 5) ++ " Löffel Pesto") ]
+        , viewEineZutat (modell.nudeln * 100 + modell.bratnudeln * 100) " Gramm Nudeln"
         , hr [] []
-        , div [] [ text (String.fromInt (modell.kartoffeln * 100) ++ " Gramm Kartoffeln") ]
-        , div [] [ text (String.fromInt (modell.kartoffeln * 5) ++ " Ml Öl") ]
+        , viewEineZutat (modell.nudeln * 5) " Löffel Pesto"
+        , hr [] []
+        , viewEineZutat (modell.kartoffeln * 100) " Gramm Kartoffeln"
+        , hr [] []
+        , viewEineZutat (modell.kartoffeln * 5 + modell.bratnudeln * 5) " ml Öl"
+        , hr [] []
+        , viewEineZutat (modell.bratnudeln * 40) " Gramm Pilze"
         ]
+
+viewEinRezept : Int -> String -> (Int -> Nachricht) -> Html Nachricht
+viewEinRezept anzahl beschreibung nachricht =
+    div []
+            [ button [ onClick (nachricht 1) ] [ text "+" ]
+            , div [] [ text (String.fromInt anzahl ++ beschreibung) ]
+            , button [ onClick (nachricht -1) ] [ text "-" ]
+            ]
+
+viewEineZutat : Int -> String -> Html Nachricht
+viewEineZutat anzahl beschreibung =
+    div [] [ text (String.fromInt anzahl ++ beschreibung) ]
