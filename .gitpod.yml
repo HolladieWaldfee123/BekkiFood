@@ -1,0 +1,11 @@
+
+tasks:
+  - command: elm reactor
+image:
+  file: .gitpod.Dockerfile
+ports:
+  - port: 8000
+    onOpen: open-preview
+vscode:
+  extensions:
+    - elmTooling.elm-ls-vscode
